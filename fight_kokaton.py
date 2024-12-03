@@ -168,14 +168,14 @@ def main():
                 return
             
         if beam is not None:
-            if beam.rct.colliderect(bomb.rct):
+            if beam.rct.colliderect(bomb.rct):  # ビームが爆弾を撃ち落としたら
                 beam = None
-                beam = None
+                bomb = None
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
         # beam.update(screen)
-        if bomb is not None:   
+        if bomb is not None:
             bomb.update(screen)
         if beam is not None:  
             beam.update(screen)
