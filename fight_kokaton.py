@@ -10,6 +10,31 @@ HEIGHT = 650  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+class Score:
+    """
+    スコア表示に関するクラス
+    """
+    def __init__(self):
+        self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)  # フォントを設定
+        self.colore = (0, 0, 255)  # 青色に設定
+        self.score = 0
+        self.img = self.fonto.render("スコア", 0, (0, 0, 255))  # 初期スコアの画像
+        self.rct = self.img.get_rect()
+        self.rct.center = (100, HEIGHT-50)  # 表示する位置
+
+    def update(self, screen: pg.Surface):
+        """
+        スコアを更新し、画面に表示する
+        """
+        self.img = self.fonto.render(f"スコア: {self.score}", 0, self.colore)  # 更新後のスコアを画像に
+        screen.blit(self.img, self.rct)  # スコアを画面に描画
+
+    def add_score(self, points: int):
+        """
+        スコアを加算する
+        """
+        self.score += points
+
 
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     """
@@ -152,6 +177,7 @@ def main():
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
     clock = pg.time.Clock()
     tmr = 0
+    score = Score()
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -175,6 +201,7 @@ def main():
         for i, bomb in enumerate(bombs):   
             if beam is not None:
                 if beam.rct.colliderect(bomb.rct):  # ビームが爆弾を撃ち落としたら
+                    score.score += 1
                     beam = None
                     bombs[i] = None
                     bird.change_img(6, screen)
@@ -189,6 +216,7 @@ def main():
         if beam is not None:  
             beam.update(screen)
         #bomb2.update(screen)
+        score.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
